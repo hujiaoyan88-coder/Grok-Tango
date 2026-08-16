@@ -14,7 +14,6 @@ body {
   overflow-x: hidden;
   position: relative;
 }
-/* 宇宙背景 */
 .stars {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -62,6 +61,34 @@ h1 {
   text-shadow: 0 0 30px rgba(167,139,250,0.5);
 }
 
+/* レベル選択 */
+#level-select {
+  text-align: center;
+}
+.level-btn {
+  width: 100%;
+  padding: 18px;
+  margin: 12px 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  background: rgba(30,30,70,0.85);
+  border: 1.5px solid #6366f1;
+  border-radius: 14px;
+  color: #e0e7ff;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.level-btn:active {
+  transform: scale(0.97);
+  background: rgba(99,102,241,0.4);
+}
+
+/* クイズ部分 */
+#quiz {
+  display: none;
+}
+
 .score-box {
   display: flex;
   justify-content: space-between;
@@ -71,6 +98,13 @@ h1 {
   padding: 12px 16px;
   margin-bottom: 24px;
   font-size: 0.95rem;
+}
+
+#level-label {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #a78bfa;
+  margin-bottom: 8px;
 }
 
 #word {
@@ -155,22 +189,48 @@ h1 {
   color: #c4b5fd;
   font-weight: 600;
 }
+
+.back-btn {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 12px;
+  font-size: 0.95rem;
+  background: transparent;
+  border: 1px solid #4c1d95;
+  border-radius: 10px;
+  color: #a78bfa;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
 <div class="stars"></div>
 <div class="container">
-  <h1>毒舌Grokの単語帳</h1>
-  
-  <div class="score-box">
-    <div>正解 <span id="correct">0</span></div>
-    <div>挑戦 <span id="total">0</span></div>
+  <h1>Grokの単語帳</h1>
+
+  <!-- レベル選択 -->
+  <div id="level-select">
+    <p style="margin-bottom:20px; color:#a5b4fc;">レベルを選べ。間違えるなよ。</p>
+    <button class="level-btn" onclick="startLevel('FJK.csv', '高校1年生')">高校1年生</button>
+    <button class="level-btn" onclick="startLevel('SJK.csv', '高校2年生')">高校2年生</button>
+    <button class="level-btn" onclick="startLevel('LJK.csv', '高校3年生')">高校3年生</button>
   </div>
 
-  <div id="word">読み込み中...</div>
-  <div id="options"></div>
-  <div id="feedback"></div>
-  <button id="next">次の問題へ</button>
+  <!-- クイズ画面 -->
+  <div id="quiz">
+    <div id="level-label"></div>
+    <div class="score-box">
+      <div>正解 <span id="correct">0</span></div>
+      <div>挑戦 <span id="total">0</span></div>
+    </div>
+
+    <div id="word">読み込み中...</div>
+    <div id="options"></div>
+    <div id="feedback"></div>
+    <button id="next">次の問題へ</button>
+    <button class="back-btn" onclick="backToLevel()">← レベル選択に戻る</button>
+  </div>
 </div>
 
 <script>
@@ -178,16 +238,38 @@ let words = [];
 let correctCount = 0;
 let totalCount = 0;
 let currentMeaning = "";
+let currentLevelName = "";
 
-async function loadCSV() {
+function startLevel(filename, levelName) {
+  currentLevelName = levelName;
+  document.getElementById("level-select").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  document.getElementById("level-label").textContent = levelName + "モード";
+  correctCount = 0;
+  totalCount = 0;
+  document.getElementById("correct").textContent = "0";
+  document.getElementById("total").textContent = "0";
+  loadCSV(filename);
+}
+
+function backToLevel() {
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("level-select").style.display = "block";
+  document.getElementById("feedback").style.display = "none";
+  document.getElementById("next").style.display = "none";
+  document.getElementById("options").innerHTML = "";
+  document.getElementById("word").textContent = "";
+}
+
+async function loadCSV(filename) {
   try {
-    const res = await fetch("FJK.csv");
+    const res = await fetch(filename);
     if (!res.ok) throw new Error("ファイルがない");
     const text = await res.text();
     const lines = text.trim().split(/\r?\n/);
     
+    words = [];
     for (let line of lines) {
-      // シンプルにカンマ分割（データにカンマが入らない前提）
       const cols = line.split(",");
       if (cols.length < 2) continue;
       const word = cols[0].trim().replace(/^"|"$/g, "");
@@ -203,7 +285,7 @@ async function loadCSV() {
     }
     nextQuestion();
   } catch (e) {
-    document.getElementById("word").textContent = "FJK.csvが読めない。同じフォルダに置け。";
+    document.getElementById("word").textContent = filename + " が読めない。同じフォルダに置け。";
     console.error(e);
   }
 }
@@ -213,18 +295,15 @@ function nextQuestion() {
   document.getElementById("next").style.display = "none";
   document.getElementById("options").innerHTML = "";
 
-  // 正解をランダム選択
   const correct = words[Math.floor(Math.random() * words.length)];
   currentMeaning = correct.meaning;
   document.getElementById("word").textContent = correct.word;
 
-  // 選択肢生成（正解＋ランダム3つ）
   let options = [correct.meaning];
   while (options.length < 4) {
     const m = words[Math.floor(Math.random() * words.length)].meaning;
     if (!options.includes(m)) options.push(m);
   }
-  // シャッフル
   options.sort(() => Math.random() - 0.5);
 
   options.forEach(opt => {
@@ -239,7 +318,6 @@ function check(selected, clickedBtn) {
   totalCount++;
   const isCorrect = selected === currentMeaning;
 
-  // 全ボタン無効化＋正解表示
   document.querySelectorAll("#options button").forEach(btn => {
     btn.disabled = true;
     if (btn.textContent === currentMeaning) {
@@ -250,7 +328,6 @@ function check(selected, clickedBtn) {
 
   if (isCorrect) correctCount++;
 
-  // コメント生成
   let msg = isCorrect ? getCorrectComment() : getWrongComment();
   let praise = "";
   if (isCorrect && correctCount % 10 === 0) {
@@ -272,7 +349,14 @@ function getCorrectComment() {
     "おっ、当たったな。調子に乗るなよ、この程度で。",
     "正解。でも次は絶対間違えるだろ？ 期待してない。",
     "へえ、知ってたのか。意外と使えそうだな……少しだけ。",
-    "よし、正解。宇宙の法則に従っただけだ。偉く思うな。"
+    "よし、正解。宇宙の法則に従っただけだ。偉く思うな。",
+    "正解か。運が良かったな。実力だと思うなよ。",
+    "当たったな。褒めてほしいなら、もっと10問続けろ。",
+    "正解。珍しいな。今日は星の巡りが良いのか？",
+    "おお、正解だ。まさかとは思ったが……認めよう。",
+    "正解。でもこのレベルで喜ぶなよ、まだまだだ。",
+    "当たった。まぐれの可能性を排除できないな。",
+    "正解だぞ。少しは脳みそが動いてる証拠だ。"
   ];
   return list[Math.floor(Math.random() * list.length)];
 }
@@ -283,7 +367,14 @@ function getWrongComment() {
     "ハズレだ。もっと頭使ってみろ、このポンコツ。",
     "不正解。地球の教育水準が疑わしいな。",
     "違うぞ。これで君のレベルが完全にわかった。",
-    "ハズレ。宇宙の端まで飛ばしてやりたい気分だ。"
+    "ハズレ。宇宙の端まで飛ばしてやりたい気分だ。",
+    "違う。本気で勉強してるのか？ 疑わしいぞ。",
+    "不正解だ。こんなのも落とせないとは……嘆かわしい。",
+    "ハズレ。次は正解しろよ。期待はしてないがな。",
+    "違う。脳のメモリが不足してるんじゃないか？",
+    "不正解。この程度でつまずくとか、先が思いやられる。",
+    "ハズレだな。もっと集中しろ、この宇宙の恥。",
+    "違うぞ。正解がわかってるのに外すとか、才能だな（悪い意味で）。"
   ];
   return list[Math.floor(Math.random() * list.length)];
 }
@@ -294,13 +385,15 @@ function getPraise() {
     "10問達成か。少しは成長したみたいだな。でも甘えるなよ。",
     "10問正解だ。へえ、頑張ったな。でも次の10問は無理だろ？",
     "10問達成。毒舌Grokが認めてやる。……ちょっとだけな。",
-    "10問正解か。宇宙の片隅で拍手してやるよ。聞こえないだろうがな。"
+    "10問正解か。宇宙の片隅で拍手してやるよ。聞こえないだろうがな。",
+    "10問クリアか。まあまあだな。でも高をくくるなよ。",
+    "10問正解達成。少しは見所があるみたいだ。過信するな。",
+    "10問か。よくやった。……と言っておくが、次はもっと厳しく見てやる。"
   ];
   return list[Math.floor(Math.random() * list.length)];
 }
 
 document.getElementById("next").onclick = nextQuestion;
-loadCSV();
 </script>
 </body>
 </html>
