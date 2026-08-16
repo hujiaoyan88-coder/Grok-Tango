@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>英 毒舌Grok単語帳</title>
+<title>毒舌Grok単語帳</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -65,23 +65,40 @@ h1 {
 #level-select {
   text-align: center;
 }
+.level-group {
+  margin-bottom: 28px;
+}
+.level-title {
+  font-size: 1.1rem;
+  color: #a78bfa;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
 .level-btn {
   width: 100%;
-  padding: 18px;
-  margin: 12px 0;
-  font-size: 1.25rem;
+  padding: 15px;
+  margin: 6px 0;
+  font-size: 1.1rem;
   font-weight: 600;
   background: rgba(30,30,70,0.85);
   border: 1.5px solid #6366f1;
-  border-radius: 14px;
+  border-radius: 12px;
   color: #e0e7ff;
   cursor: pointer;
   transition: all 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
+.level-btn.review {
+  border-color: #f472b6;
+  background: rgba(70,30,50,0.85);
+}
 .level-btn:active {
   transform: scale(0.97);
-  background: rgba(99,102,241,0.4);
+}
+.review-count {
+  font-size: 0.85rem;
+  color: #f9a8d4;
+  margin-left: 6px;
 }
 
 /* クイズ部分 */
@@ -102,9 +119,10 @@ h1 {
 
 #level-label {
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: #a78bfa;
   margin-bottom: 8px;
+  font-weight: 600;
 }
 
 #word {
@@ -207,14 +225,35 @@ h1 {
 <body>
 <div class="stars"></div>
 <div class="container">
-  <h1>Grokの単語帳</h1>
+  <h1>毒舌Grokの単語帳</h1>
 
   <!-- レベル選択 -->
   <div id="level-select">
-    <p style="margin-bottom:20px; color:#a5b4fc;">レベルを選べ。間違えるなよ。</p>
-    <button class="level-btn" onclick="startLevel('FJK.csv', '高校1年生')">高校1年生</button>
-    <button class="level-btn" onclick="startLevel('SJK.csv', '高校2年生')">高校2年生</button>
-    <button class="level-btn" onclick="startLevel('LJK.csv', '高校3年生')">高校3年生</button>
+    <p style="margin-bottom:24px; color:#a5b4fc;">レベルとモードを選べ。間違えるなよ。</p>
+
+    <div class="level-group">
+      <div class="level-title">高校1年生</div>
+      <button class="level-btn" onclick="startLevel('FJK.csv', '高校1年生', false)">通常モード</button>
+      <button class="level-btn review" onclick="startLevel('FJK.csv', '高校1年生', true)">
+        復習モード <span class="review-count" id="count-FJK"></span>
+      </button>
+    </div>
+
+    <div class="level-group">
+      <div class="level-title">高校2年生</div>
+      <button class="level-btn" onclick="startLevel('SJK.csv', '高校2年生', false)">通常モード</button>
+      <button class="level-btn review" onclick="startLevel('SJK.csv', '高校2年生', true)">
+        復習モード <span class="review-count" id="count-SJK"></span>
+      </button>
+    </div>
+
+    <div class="level-group">
+      <div class="level-title">高校3年生</div>
+      <button class="level-btn" onclick="startLevel('LJK.csv', '高校3年生', false)">通常モード</button>
+      <button class="level-btn review" onclick="startLevel('LJK.csv', '高校3年生', true)">
+        復習モード <span class="review-count" id="count-LJK"></span>
+      </button>
+    </div>
   </div>
 
   <!-- クイズ画面 -->
@@ -238,18 +277,91 @@ let words = [];
 let correctCount = 0;
 let totalCount = 0;
 let currentMeaning = "";
+let currentWord = "";
 let currentLevelName = "";
+let currentFilename = "";
+let isReviewMode = false;
 
-function startLevel(filename, levelName) {
+// 復習リストのキー
+function getReviewKey(filename) {
+  return "review_" + filename.replace(".csv", "");
+}
+
+// 復習リスト読み込み
+function loadReviewList(filename) {
+  const key = getReviewKey(filename);
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : [];
+}
+
+// 復習リスト保存
+function saveReviewList(filename, list) {
+  const key = getReviewKey(filename);
+  localStorage.setItem(key, JSON.stringify(list));
+  updateReviewCounts();
+}
+
+// 復習数表示更新
+function updateReviewCounts() {
+  ["FJK", "SJK", "LJK"].forEach(name => {
+    const list = loadReviewList(name + ".csv");
+    const el = document.getElementById("count-" + name);
+    if (el) {
+      el.textContent = list.length > 0 ? `（${list.length}問）` : "";
+    }
+  });
+}
+
+// 間違えた問題を復習リストに追加
+function addToReview(wordObj) {
+  let list = loadReviewList(currentFilename);
+  // 重複チェック
+  if (!list.some(item => item.word === wordObj.word)) {
+    list.push(wordObj);
+    saveReviewList(currentFilename, list);
+  }
+}
+
+// 正解した問題を復習リストから削除
+function removeFromReview(wordObj) {
+  let list = loadReviewList(currentFilename);
+  list = list.filter(item => item.word !== wordObj.word);
+  saveReviewList(currentFilename, list);
+}
+
+function startLevel(filename, levelName, review) {
+  currentFilename = filename;
   currentLevelName = levelName;
+  isReviewMode = review;
+
   document.getElementById("level-select").style.display = "none";
   document.getElementById("quiz").style.display = "block";
-  document.getElementById("level-label").textContent = levelName + "モード";
+  document.getElementById("level-label").textContent = 
+    levelName + (review ? " 【復習モード】" : " 【通常モード】");
+
   correctCount = 0;
   totalCount = 0;
   document.getElementById("correct").textContent = "0";
   document.getElementById("total").textContent = "0";
-  loadCSV(filename);
+
+  if (review) {
+    // 復習モード
+    words = loadReviewList(filename);
+    if (words.length === 0) {
+      document.getElementById("word").textContent = "復習する問題がない。\nまずは通常モードで間違えろ。";
+      document.getElementById("options").innerHTML = "";
+      return;
+    }
+    if (words.length < 4) {
+      // 4問未満でも無理やり出す（選択肢が足りない場合は適当に埋める）
+      nextQuestion();
+      return;
+    }
+    nextQuestion();
+  } else {
+    // 通常モード
+    loadCSV(filename);
+  }
 }
 
 function backToLevel() {
@@ -259,6 +371,7 @@ function backToLevel() {
   document.getElementById("next").style.display = "none";
   document.getElementById("options").innerHTML = "";
   document.getElementById("word").textContent = "";
+  updateReviewCounts();
 }
 
 async function loadCSV(filename) {
@@ -295,26 +408,53 @@ function nextQuestion() {
   document.getElementById("next").style.display = "none";
   document.getElementById("options").innerHTML = "";
 
+  if (words.length === 0) {
+    document.getElementById("word").textContent = isReviewMode 
+      ? "復習完了！全部正解したな。少しは成長したか。" 
+      : "問題がない。";
+    return;
+  }
+
   const correct = words[Math.floor(Math.random() * words.length)];
+  currentWord = correct.word;
   currentMeaning = correct.meaning;
   document.getElementById("word").textContent = correct.word;
 
+  // 選択肢生成
   let options = [correct.meaning];
-  while (options.length < 4) {
-    const m = words[Math.floor(Math.random() * words.length)].meaning;
-    if (!options.includes(m)) options.push(m);
+
+  // 復習モードで単語が少ない場合の対策
+  const source = isReviewMode ? loadReviewList(currentFilename) : words;
+  // 通常時は全単語から、復習時も可能な限り他の意味を取る
+  // 足りない場合はダミーを入れる
+  let attempts = 0;
+  while (options.length < 4 && attempts < 50) {
+    attempts++;
+    if (source.length > 0) {
+      const m = source[Math.floor(Math.random() * source.length)].meaning;
+      if (!options.includes(m)) options.push(m);
+    } else {
+      break;
+    }
   }
+  // それでも足りない場合は適当なダミー
+  const dummies = ["わからない", "知らない", "覚えてない", "パス"];
+  while (options.length < 4) {
+    const d = dummies[options.length - 1] || "???";
+    if (!options.includes(d)) options.push(d);
+  }
+
   options.sort(() => Math.random() - 0.5);
 
   options.forEach(opt => {
     const btn = document.createElement("button");
     btn.textContent = opt;
-    btn.onclick = () => check(opt, btn);
+    btn.onclick = () => check(opt, btn, correct);
     document.getElementById("options").appendChild(btn);
   });
 }
 
-function check(selected, clickedBtn) {
+function check(selected, clickedBtn, correctObj) {
   totalCount++;
   const isCorrect = selected === currentMeaning;
 
@@ -326,7 +466,21 @@ function check(selected, clickedBtn) {
   });
   if (!isCorrect) clickedBtn.classList.add("wrong");
 
-  if (isCorrect) correctCount++;
+  if (isCorrect) {
+    correctCount++;
+    // 復習モードならリストから削除
+    if (isReviewMode) {
+      removeFromReview(correctObj);
+      // 現在のwordsからも削除（すぐに反映）
+      words = words.filter(w => w.word !== correctObj.word);
+    }
+  } else {
+    // 通常モードで間違えたら復習リストに追加
+    if (!isReviewMode) {
+      addToReview(correctObj);
+    }
+    // 復習モードで間違えてもそのまま残る（何もしない）
+  }
 
   let msg = isCorrect ? getCorrectComment() : getWrongComment();
   let praise = "";
@@ -394,6 +548,9 @@ function getPraise() {
 }
 
 document.getElementById("next").onclick = nextQuestion;
+
+// ページ読み込み時に復習数を表示
+updateReviewCounts();
 </script>
 </body>
 </html>
