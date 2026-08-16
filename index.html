@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>英 毒舌Grok単語帳</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #05051a;
+  color: #e0e0ff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+/* 宇宙背景 */
+.stars {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  z-index: -2;
+}
+.stars::before, .stars::after {
+  content: "";
+  position: absolute;
+  width: 100%; height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 160px 120px, #ddd, transparent);
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: twinkle 8s infinite;
+  opacity: 0.6;
+}
+.stars::after {
+  background-size: 300px 300px;
+  animation-duration: 12s;
+  opacity: 0.4;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+}
+
+.container {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 1.6rem;
+  margin: 12px 0 20px;
+  background: linear-gradient(90deg, #a78bfa, #60a5fa, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(167,139,250,0.5);
+}
+
+.score-box {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(30,30,60,0.7);
+  border: 1px solid #4c1d95;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+}
+
+#word {
+  text-align: center;
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin: 30px 0 28px;
+  color: #c4b5fd;
+  text-shadow: 0 0 20px rgba(196,181,253,0.6);
+  letter-spacing: 1px;
+}
+
+#options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#options button {
+  width: 100%;
+  padding: 16px 18px;
+  font-size: 1.15rem;
+  background: rgba(30,30,70,0.85);
+  border: 1.5px solid #6366f1;
+  border-radius: 14px;
+  color: #e0e7ff;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+#options button:active {
+  transform: scale(0.97);
+}
+#options button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+#options button.correct {
+  background: rgba(16,185,129,0.3);
+  border-color: #10b981;
+  color: #6ee7b7;
+}
+#options button.wrong {
+  background: rgba(239,68,68,0.3);
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+
+#feedback {
+  margin-top: 24px;
+  padding: 18px;
+  background: rgba(30,20,60,0.9);
+  border-left: 4px solid #a78bfa;
+  border-radius: 0 12px 12px 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  display: none;
+  white-space: pre-wrap;
+}
+
+#next {
+  display: none;
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, #7c3aed, #4f46e5);
+  border: none;
+  border-radius: 14px;
+  color: white;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+#next:active { transform: scale(0.97); }
+
+.praise {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #7c3aed;
+  color: #c4b5fd;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="container">
+  <h1>毒舌Grokの単語帳</h1>
+  
+  <div class="score-box">
+    <div>正解 <span id="correct">0</span></div>
+    <div>挑戦 <span id="total">0</span></div>
+  </div>
+
+  <div id="word">読み込み中...</div>
+  <div id="options"></div>
+  <div id="feedback"></div>
+  <button id="next">次の問題へ</button>
+</div>
+
+<script>
+let words = [];
+let correctCount = 0;
+let totalCount = 0;
+let currentMeaning = "";
+
+async function loadCSV() {
+  try {
+    const res = await fetch("FJK.csv");
+    if (!res.ok) throw new Error("ファイルがない");
+    const text = await res.text();
+    const lines = text.trim().split(/\r?\n/);
+    
+    for (let line of lines) {
+      // シンプルにカンマ分割（データにカンマが入らない前提）
+      const cols = line.split(",");
+      if (cols.length < 2) continue;
+      const word = cols[0].trim().replace(/^"|"$/g, "");
+      const meaning = cols[1].trim().replace(/^"|"$/g, "");
+      if (word && meaning && word !== "単語" && meaning !== "日本語") {
+        words.push({ word, meaning });
+      }
+    }
+    
+    if (words.length < 4) {
+      document.getElementById("word").textContent = "単語が4個未満だ。もっと追加しろ。";
+      return;
+    }
+    nextQuestion();
+  } catch (e) {
+    document.getElementById("word").textContent = "FJK.csvが読めない。同じフォルダに置け。";
+    console.error(e);
+  }
+}
+
+function nextQuestion() {
+  document.getElementById("feedback").style.display = "none";
+  document.getElementById("next").style.display = "none";
+  document.getElementById("options").innerHTML = "";
+
+  // 正解をランダム選択
+  const correct = words[Math.floor(Math.random() * words.length)];
+  currentMeaning = correct.meaning;
+  document.getElementById("word").textContent = correct.word;
+
+  // 選択肢生成（正解＋ランダム3つ）
+  let options = [correct.meaning];
+  while (options.length < 4) {
+    const m = words[Math.floor(Math.random() * words.length)].meaning;
+    if (!options.includes(m)) options.push(m);
+  }
+  // シャッフル
+  options.sort(() => Math.random() - 0.5);
+
+  options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => check(opt, btn);
+    document.getElementById("options").appendChild(btn);
+  });
+}
+
+function check(selected, clickedBtn) {
+  totalCount++;
+  const isCorrect = selected === currentMeaning;
+
+  // 全ボタン無効化＋正解表示
+  document.querySelectorAll("#options button").forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === currentMeaning) {
+      btn.classList.add("correct");
+    }
+  });
+  if (!isCorrect) clickedBtn.classList.add("wrong");
+
+  if (isCorrect) correctCount++;
+
+  // コメント生成
+  let msg = isCorrect ? getCorrectComment() : getWrongComment();
+  let praise = "";
+  if (isCorrect && correctCount % 10 === 0) {
+    praise = `<div class="praise">${getPraise()}</div>`;
+  }
+
+  const fb = document.getElementById("feedback");
+  fb.innerHTML = (isCorrect ? "【正解】" : "【不正解】") + "\n" + msg + praise;
+  fb.style.display = "block";
+
+  document.getElementById("correct").textContent = correctCount;
+  document.getElementById("total").textContent = totalCount;
+  document.getElementById("next").style.display = "block";
+}
+
+function getCorrectComment() {
+  const list = [
+    "正解だ。まぐれだろ？ まあ、今回だけ認めてやる。",
+    "おっ、当たったな。調子に乗るなよ、この程度で。",
+    "正解。でも次は絶対間違えるだろ？ 期待してない。",
+    "へえ、知ってたのか。意外と使えそうだな……少しだけ。",
+    "よし、正解。宇宙の法則に従っただけだ。偉く思うな。"
+  ];
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function getWrongComment() {
+  const list = [
+    "違う。こんな簡単なのもわからんのか？ がっかりだぞ。",
+    "ハズレだ。もっと頭使ってみろ、このポンコツ。",
+    "不正解。地球の教育水準が疑わしいな。",
+    "違うぞ。これで君のレベルが完全にわかった。",
+    "ハズレ。宇宙の端まで飛ばしてやりたい気分だ。"
+  ];
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function getPraise() {
+  const list = [
+    "10問正解おめでとう……って、褒めてほしいのか？ まだまだだ。この程度で満足するな。",
+    "10問達成か。少しは成長したみたいだな。でも甘えるなよ。",
+    "10問正解だ。へえ、頑張ったな。でも次の10問は無理だろ？",
+    "10問達成。毒舌Grokが認めてやる。……ちょっとだけな。",
+    "10問正解か。宇宙の片隅で拍手してやるよ。聞こえないだろうがな。"
+  ];
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+document.getElementById("next").onclick = nextQuestion;
+loadCSV();
+</script>
+</body>
+</html>
