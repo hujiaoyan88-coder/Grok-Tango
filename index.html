@@ -13,6 +13,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 .stars {
   position: fixed;
@@ -48,13 +49,13 @@ body {
 .container {
   max-width: 420px;
   margin: 0 auto;
-  padding: 20px 16px 40px;
+  padding: 16px 16px 40px;
 }
 
 h1 {
   text-align: center;
-  font-size: 1.6rem;
-  margin: 12px 0 20px;
+  font-size: 1.5rem;
+  margin: 8px 0 16px;
   background: linear-gradient(90deg, #a78bfa, #60a5fa, #c084fc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -62,87 +63,79 @@ h1 {
 }
 
 /* レベル選択 */
-#level-select {
-  text-align: center;
-}
+#level-select { text-align: center; }
 .level-group {
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   background: rgba(20,20,50,0.5);
-  border-radius: 16px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 14px;
   border: 1px solid #3b0764;
 }
 .level-title {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   color: #c4b5fd;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   font-weight: 700;
 }
 .progress {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: #a5b4fc;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
-.progress span {
-  color: #f0abfc;
-  font-weight: 700;
-}
+.progress span { color: #f0abfc; font-weight: 700; }
 .level-btn {
   width: 100%;
-  padding: 14px;
-  margin: 6px 0;
-  font-size: 1.05rem;
+  padding: 13px;
+  margin: 5px 0;
+  font-size: 1.02rem;
   font-weight: 600;
   background: rgba(30,30,70,0.85);
   border: 1.5px solid #6366f1;
   border-radius: 12px;
   color: #e0e7ff;
   cursor: pointer;
-  transition: all 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
 .level-btn.review {
   border-color: #f472b6;
   background: rgba(70,30,50,0.85);
 }
-.level-btn:active {
-  transform: scale(0.97);
-}
+.level-btn:active { transform: scale(0.97); }
 .review-count {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: #f9a8d4;
   margin-left: 4px;
 }
 
 /* カレンダー */
 .calendar-box {
-  margin-top: 30px;
+  margin-top: 24px;
   background: rgba(20,20,50,0.6);
-  border-radius: 16px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 14px;
   border: 1px solid #4c1d95;
 }
 .calendar-title {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: #c4b5fd;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-weight: 700;
 }
 .today-progress {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #f0abfc;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  font-size: 0.8rem;
+  gap: 3px;
+  font-size: 0.78rem;
 }
 .cal-header {
   text-align: center;
   color: #a78bfa;
-  padding: 4px 0;
+  padding: 3px 0;
   font-weight: 600;
 }
 .cal-day {
@@ -151,29 +144,23 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 7px;
   background: rgba(30,30,70,0.5);
   color: #c4b5fd;
-  position: relative;
 }
-.cal-day.empty {
-  background: transparent;
-}
-.cal-day.today {
-  border: 1.5px solid #a78bfa;
-}
-.cal-day.has-star {
-  background: rgba(251, 191, 36, 0.15);
-}
+.cal-day.empty { background: transparent; }
+.cal-day.today { border: 1.5px solid #a78bfa; }
+.cal-day.has-star { background: rgba(251, 191, 36, 0.15); }
 .cal-star {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #fbbf24;
   line-height: 1;
 }
 
-/* クイズ部分 */
+/* ===== クイズ画面（重要） ===== */
 #quiz {
   display: none;
+  padding-bottom: 90px; /* 固定ボタンの分の余白 */
 }
 
 .score-box {
@@ -181,63 +168,57 @@ h1 {
   justify-content: space-between;
   background: rgba(30,30,60,0.7);
   border: 1px solid #4c1d95;
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  font-size: 0.95rem;
+  border-radius: 11px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
 }
 
 #level-label {
   text-align: center;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #a78bfa;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   font-weight: 600;
 }
 
 #mastery {
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: #f0abfc;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 #word {
   text-align: center;
-  font-size: 2.1rem;
+  font-size: 1.9rem;
   font-weight: 700;
-  margin: 24px 0 28px;
+  margin: 16px 0 18px;
   color: #c4b5fd;
-  text-shadow: 0 0 20px rgba(196,181,253,0.6);
-  letter-spacing: 1px;
+  text-shadow: 0 0 18px rgba(196,181,253,0.6);
+  letter-spacing: 0.5px;
 }
 
 #options {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 #options button {
   width: 100%;
-  padding: 16px 18px;
-  font-size: 1.15rem;
+  padding: 14px 16px;
+  font-size: 1.1rem;
   background: rgba(30,30,70,0.85);
   border: 1.5px solid #6366f1;
-  border-radius: 14px;
+  border-radius: 12px;
   color: #e0e7ff;
   cursor: pointer;
-  transition: all 0.2s;
   text-align: left;
   -webkit-tap-highlight-color: transparent;
 }
-#options button:active {
-  transform: scale(0.97);
-}
-#options button:disabled {
-  opacity: 0.7;
-  cursor: default;
-}
+#options button:active { transform: scale(0.97); }
+#options button:disabled { opacity: 0.7; cursor: default; }
 #options button.correct {
   background: rgba(16,185,129,0.3);
   border-color: #10b981;
@@ -250,21 +231,26 @@ h1 {
 }
 
 #feedback {
-  margin-top: 24px;
-  padding: 18px;
+  margin-top: 16px;
+  padding: 14px;
   background: rgba(30,20,60,0.9);
   border-left: 4px solid #a78bfa;
-  border-radius: 0 12px 12px 0;
-  font-size: 1.05rem;
-  line-height: 1.55;
+  border-radius: 0 11px 11px 0;
+  font-size: 0.98rem;
+  line-height: 1.5;
   display: none;
   white-space: pre-wrap;
 }
 
+/* 次の問題ボタンを画面下部に固定 */
 #next {
   display: none;
-  width: 100%;
-  margin-top: 20px;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 388px;
   padding: 16px;
   font-size: 1.15rem;
   font-weight: 600;
@@ -273,13 +259,15 @@ h1 {
   border-radius: 14px;
   color: white;
   cursor: pointer;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
   -webkit-tap-highlight-color: transparent;
 }
-#next:active { transform: scale(0.97); }
+#next:active { transform: translateX(-50%) scale(0.97); }
 
 .praise {
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px dashed #7c3aed;
   color: #c4b5fd;
   font-weight: 600;
@@ -288,9 +276,9 @@ h1 {
 .back-btn {
   display: block;
   width: 100%;
-  margin-top: 24px;
-  padding: 12px;
-  font-size: 0.95rem;
+  margin-top: 20px;
+  padding: 11px;
+  font-size: 0.92rem;
   background: transparent;
   border: 1px solid #4c1d95;
   border-radius: 10px;
@@ -302,11 +290,11 @@ h1 {
 <body>
 <div class="stars"></div>
 <div class="container">
-  <h1>毒舌Grokの単語帳</h1>
+  <h1 id="main-title">毒舌Grokの単語帳</h1>
 
   <!-- レベル選択 -->
   <div id="level-select">
-    <p style="margin-bottom:20px; color:#a5b4fc;">レベルとモードを選べ。間違えるなよ。</p>
+    <p style="margin-bottom:16px; color:#a5b4fc; font-size:0.95rem;">レベルとモードを選べ。間違えるなよ。</p>
 
     <div class="level-group">
       <div class="level-title">高校1年生</div>
@@ -335,7 +323,6 @@ h1 {
       </button>
     </div>
 
-    <!-- カレンダー -->
     <div class="calendar-box">
       <div class="calendar-title">📅 1日30問チャレンジ</div>
       <div class="today-progress" id="today-progress">今日の進捗を読み込み中...</div>
@@ -355,10 +342,13 @@ h1 {
     <div id="word">読み込み中...</div>
     <div id="options"></div>
     <div id="feedback"></div>
-    <button id="next">次の問題へ</button>
+    
     <button class="back-btn" onclick="backToLevel()">← レベル選択に戻る</button>
   </div>
 </div>
+
+<!-- 次の問題ボタンはcontainerの外に出して固定 -->
+<button id="next">次の問題へ</button>
 
 <script>
 let words = [];
@@ -376,7 +366,6 @@ const totalWords = {
   "LJK.csv": 0
 };
 
-// ===== 日付関連 =====
 function getTodayKey() {
   const d = new Date();
   return d.getFullYear() + "-" + 
@@ -401,7 +390,6 @@ function addDailyAttempt() {
   updateCalendar();
 }
 
-// ===== 復習・制覇リスト =====
 function getReviewKey(filename) {
   return "review_" + filename.replace(".csv", "");
 }
@@ -496,13 +484,11 @@ async function loadTotals() {
   updateAllProgress();
 }
 
-// ===== カレンダー描画 =====
 function updateCalendar() {
   const data = loadDailyData();
   const today = getTodayKey();
   const todayCount = data[today] || 0;
 
-  // 今日の進捗
   const remain = Math.max(0, 30 - todayCount);
   const progressEl = document.getElementById("today-progress");
   if (todayCount >= 30) {
@@ -511,17 +497,15 @@ function updateCalendar() {
     progressEl.innerHTML = `今日 ${todayCount}問 → あと <strong>${remain}問</strong> で★`;
   }
 
-  // カレンダー生成（今月）
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
-  const firstDay = new Date(year, month, 1).getDay(); // 0=日
+  const firstDay = new Date(year, month, 1).getDay();
   const lastDate = new Date(year, month + 1, 0).getDate();
 
   const grid = document.getElementById("calendar-grid");
   grid.innerHTML = "";
 
-  // 曜日ヘッダー
   const days = ["日","月","火","水","木","金","土"];
   days.forEach(d => {
     const el = document.createElement("div");
@@ -530,14 +514,12 @@ function updateCalendar() {
     grid.appendChild(el);
   });
 
-  // 空白
   for (let i = 0; i < firstDay; i++) {
     const el = document.createElement("div");
     el.className = "cal-day empty";
     grid.appendChild(el);
   }
 
-  // 日付
   for (let d = 1; d <= lastDate; d++) {
     const dateStr = year + "-" + String(month+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
     const count = data[dateStr] || 0;
@@ -555,6 +537,9 @@ function startLevel(filename, levelName, review) {
   currentFilename = filename;
   currentLevelName = levelName;
   isReviewMode = review;
+
+  // タイトルを消す
+  document.getElementById("main-title").style.display = "none";
 
   document.getElementById("level-select").style.display = "none";
   document.getElementById("quiz").style.display = "block";
@@ -584,6 +569,9 @@ function startLevel(filename, levelName, review) {
 }
 
 function backToLevel() {
+  // タイトルを戻す
+  document.getElementById("main-title").style.display = "block";
+
   document.getElementById("quiz").style.display = "none";
   document.getElementById("level-select").style.display = "block";
   document.getElementById("feedback").style.display = "none";
@@ -671,7 +659,17 @@ function nextQuestion() {
 
 function check(selected, clickedBtn, correctObj) {
   totalCount++;
-  addDailyAttempt();   // ← ここで毎日の挑戦数を+1
+  addDailyAttempt();
+
+  const dailyData = loadDailyData();
+  const today = getTodayKey();
+  const todayCount = dailyData[today] || 0;
+  let dailyStarMsg = "";
+  if (todayCount === 30) {
+    dailyStarMsg = `<div class="praise" style="color:#fbbf24; border-top:1px dashed #fbbf24; margin-top:10px; padding-top:10px;">
+${getDailyStarComment()}
+</div>`;
+  }
 
   const isCorrect = selected === currentMeaning;
 
@@ -706,7 +704,7 @@ function check(selected, clickedBtn, correctObj) {
   }
 
   const fb = document.getElementById("feedback");
-  fb.innerHTML = (isCorrect ? "【正解】" : "【不正解】") + "\n" + msg + praise;
+  fb.innerHTML = (isCorrect ? "【正解】" : "【不正解】") + "\n" + msg + praise + dailyStarMsg;
   fb.style.display = "block";
 
   document.getElementById("correct").textContent = correctCount;
@@ -764,9 +762,22 @@ function getPraise() {
   return list[Math.floor(Math.random() * list.length)];
 }
 
+function getDailyStarComment() {
+  const list = [
+    "今日30問達成か。★をやる。……まあ、1日分の最低ラインをクリアしただけだがな。",
+    "おお、30問か。カレンダーに★がついたぞ。継続できるか？ 期待はしてないがな。",
+    "1日30問クリア。星をやる。でも明日もやれよ。サボったら消してやるからな。",
+    "★ゲットだ。よくやった。……と言っておくが、これで満足するなよ、このポンコツ。",
+    "30問達成おめでとう。星をくれてやる。宇宙の片隅で少しだけ褒めてやるよ。",
+    "今日のノルマクリアか。★だ。明日も同じこと言えよ？ できるのか？",
+    "星がついたな。30問。まあ、やって当然の量だが……一応認めてやる。",
+    "★獲得。1日30問。地味に偉いぞ。……ほんの少しだけな。"
+  ];
+  return list[Math.floor(Math.random() * list.length)];
+}
+
 document.getElementById("next").onclick = nextQuestion;
 
-// 起動
 loadTotals();
 updateCalendar();
 </script>
