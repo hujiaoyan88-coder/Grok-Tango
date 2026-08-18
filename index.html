@@ -114,6 +114,63 @@ h1 {
   margin-left: 4px;
 }
 
+/* カレンダー */
+.calendar-box {
+  margin-top: 30px;
+  background: rgba(20,20,50,0.6);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid #4c1d95;
+}
+.calendar-title {
+  font-size: 1.1rem;
+  color: #c4b5fd;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.today-progress {
+  font-size: 0.95rem;
+  color: #f0abfc;
+  margin-bottom: 14px;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  font-size: 0.8rem;
+}
+.cal-header {
+  text-align: center;
+  color: #a78bfa;
+  padding: 4px 0;
+  font-weight: 600;
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(30,30,70,0.5);
+  color: #c4b5fd;
+  position: relative;
+}
+.cal-day.empty {
+  background: transparent;
+}
+.cal-day.today {
+  border: 1.5px solid #a78bfa;
+}
+.cal-day.has-star {
+  background: rgba(251, 191, 36, 0.15);
+}
+.cal-star {
+  font-size: 0.9rem;
+  color: #fbbf24;
+  line-height: 1;
+}
+
 /* クイズ部分 */
 #quiz {
   display: none;
@@ -277,6 +334,13 @@ h1 {
         復習モード <span class="review-count" id="count-LJK"></span>
       </button>
     </div>
+
+    <!-- カレンダー -->
+    <div class="calendar-box">
+      <div class="calendar-title">📅 1日30問チャレンジ</div>
+      <div class="today-progress" id="today-progress">今日の進捗を読み込み中...</div>
+      <div class="calendar-grid" id="calendar-grid"></div>
+    </div>
   </div>
 
   <!-- クイズ画面 -->
@@ -306,14 +370,38 @@ let currentLevelName = "";
 let currentFilename = "";
 let isReviewMode = false;
 
-// 各レベルの総単語数
 const totalWords = {
   "FJK.csv": 0,
   "SJK.csv": 0,
   "LJK.csv": 0
 };
 
-// ===== 復習リスト =====
+// ===== 日付関連 =====
+function getTodayKey() {
+  const d = new Date();
+  return d.getFullYear() + "-" + 
+         String(d.getMonth()+1).padStart(2,"0") + "-" + 
+         String(d.getDate()).padStart(2,"0");
+}
+
+function loadDailyData() {
+  const data = localStorage.getItem("daily_attempts");
+  return data ? JSON.parse(data) : {};
+}
+
+function saveDailyData(data) {
+  localStorage.setItem("daily_attempts", JSON.stringify(data));
+}
+
+function addDailyAttempt() {
+  const today = getTodayKey();
+  const data = loadDailyData();
+  data[today] = (data[today] || 0) + 1;
+  saveDailyData(data);
+  updateCalendar();
+}
+
+// ===== 復習・制覇リスト =====
 function getReviewKey(filename) {
   return "review_" + filename.replace(".csv", "");
 }
@@ -326,7 +414,6 @@ function saveReviewList(filename, list) {
   updateAllProgress();
 }
 
-// ===== 制覇リスト（新） =====
 function getMasteredKey(filename) {
   return "mastered_" + filename.replace(".csv", "");
 }
@@ -339,7 +426,6 @@ function saveMasteredList(filename, list) {
   updateAllProgress();
 }
 
-// 制覇に追加
 function addToMastered(wordObj) {
   let list = loadMasteredList(currentFilename);
   if (!list.some(item => item.word === wordObj.word)) {
@@ -347,15 +433,11 @@ function addToMastered(wordObj) {
     saveMasteredList(currentFilename, list);
   }
 }
-
-// 制覇から削除
 function removeFromMastered(wordObj) {
   let list = loadMasteredList(currentFilename);
   list = list.filter(item => item.word !== wordObj.word);
   saveMasteredList(currentFilename, list);
 }
-
-// 復習に追加
 function addToReview(wordObj) {
   let list = loadReviewList(currentFilename);
   if (!list.some(item => item.word === wordObj.word)) {
@@ -363,15 +445,12 @@ function addToReview(wordObj) {
     saveReviewList(currentFilename, list);
   }
 }
-
-// 復習から削除
 function removeFromReview(wordObj) {
   let list = loadReviewList(currentFilename);
   list = list.filter(item => item.word !== wordObj.word);
   saveReviewList(currentFilename, list);
 }
 
-// 制覇数・復習数を全部更新
 function updateAllProgress() {
   ["FJK", "SJK", "LJK"].forEach(name => {
     const filename = name + ".csv";
@@ -379,13 +458,11 @@ function updateAllProgress() {
     const reviewList = loadReviewList(filename);
     const total = totalWords[filename] || 0;
 
-    // 復習数
     const countEl = document.getElementById("count-" + name);
     if (countEl) {
       countEl.textContent = reviewList.length > 0 ? `（${reviewList.length}問）` : "";
     }
 
-    // 制覇表示
     const progressEl = document.getElementById("progress-" + name);
     if (progressEl) {
       progressEl.innerHTML = `制覇 <span>${masteredList.length}</span> / ${total || "--"}`;
@@ -393,7 +470,6 @@ function updateAllProgress() {
   });
 }
 
-// CSVの総数を取得
 async function loadTotals() {
   const files = ["FJK.csv", "SJK.csv", "LJK.csv"];
   for (const file of files) {
@@ -420,6 +496,61 @@ async function loadTotals() {
   updateAllProgress();
 }
 
+// ===== カレンダー描画 =====
+function updateCalendar() {
+  const data = loadDailyData();
+  const today = getTodayKey();
+  const todayCount = data[today] || 0;
+
+  // 今日の進捗
+  const remain = Math.max(0, 30 - todayCount);
+  const progressEl = document.getElementById("today-progress");
+  if (todayCount >= 30) {
+    progressEl.innerHTML = `今日 <strong style="color:#fbbf24;">${todayCount}問</strong> 達成！ ★ゲット済み`;
+  } else {
+    progressEl.innerHTML = `今日 ${todayCount}問 → あと <strong>${remain}問</strong> で★`;
+  }
+
+  // カレンダー生成（今月）
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const firstDay = new Date(year, month, 1).getDay(); // 0=日
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  const grid = document.getElementById("calendar-grid");
+  grid.innerHTML = "";
+
+  // 曜日ヘッダー
+  const days = ["日","月","火","水","木","金","土"];
+  days.forEach(d => {
+    const el = document.createElement("div");
+    el.className = "cal-header";
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  // 空白
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement("div");
+    el.className = "cal-day empty";
+    grid.appendChild(el);
+  }
+
+  // 日付
+  for (let d = 1; d <= lastDate; d++) {
+    const dateStr = year + "-" + String(month+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
+    const count = data[dateStr] || 0;
+    const el = document.createElement("div");
+    el.className = "cal-day";
+    if (dateStr === today) el.classList.add("today");
+    if (count >= 30) el.classList.add("has-star");
+
+    el.innerHTML = `<div>${d}</div>` + (count >= 30 ? `<div class="cal-star">★</div>` : "");
+    grid.appendChild(el);
+  }
+}
+
 function startLevel(filename, levelName, review) {
   currentFilename = filename;
   currentLevelName = levelName;
@@ -430,7 +561,6 @@ function startLevel(filename, levelName, review) {
   document.getElementById("level-label").textContent = 
     levelName + (review ? " 【復習モード】" : " 【通常モード】");
 
-  // 制覇状況を表示
   const total = totalWords[filename] || 0;
   const mastered = loadMasteredList(filename).length;
   document.getElementById("mastery").textContent = `制覇 ${mastered} / ${total}`;
@@ -461,6 +591,7 @@ function backToLevel() {
   document.getElementById("options").innerHTML = "";
   document.getElementById("word").textContent = "";
   updateAllProgress();
+  updateCalendar();
 }
 
 async function loadCSV(filename) {
@@ -540,6 +671,8 @@ function nextQuestion() {
 
 function check(selected, clickedBtn, correctObj) {
   totalCount++;
+  addDailyAttempt();   // ← ここで毎日の挑戦数を+1
+
   const isCorrect = selected === currentMeaning;
 
   document.querySelectorAll("#options button").forEach(btn => {
@@ -552,20 +685,16 @@ function check(selected, clickedBtn, correctObj) {
 
   if (isCorrect) {
     correctCount++;
-    // 正解 → 制覇に追加
     addToMastered(correctObj);
-    // 復習モードなら復習リストから削除
     if (isReviewMode) {
       removeFromReview(correctObj);
       words = words.filter(w => w.word !== correctObj.word);
     }
   } else {
-    // 不正解 → 復習に追加 ＋ 制覇から外す
     addToReview(correctObj);
     removeFromMastered(correctObj);
   }
 
-  // 制覇数をリアルタイム更新
   const total = totalWords[currentFilename] || 0;
   const mastered = loadMasteredList(currentFilename).length;
   document.getElementById("mastery").textContent = `制覇 ${mastered} / ${total}`;
@@ -637,8 +766,9 @@ function getPraise() {
 
 document.getElementById("next").onclick = nextQuestion;
 
-// 起動時に総数を読み込んで制覇状況を表示
+// 起動
 loadTotals();
+updateCalendar();
 </script>
 </body>
 </html>
