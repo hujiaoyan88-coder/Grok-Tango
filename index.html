@@ -53,45 +53,12 @@ body {
 
 h1 {
   text-align: center;
-  font-size: 1.55rem;
-  margin: 8px 0 16px;
+  font-size: 1.6rem;
+  margin: 12px 0 20px;
   background: linear-gradient(90deg, #a78bfa, #60a5fa, #c084fc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 30px rgba(167,139,250,0.5);
-}
-
-/* ===== 統計バー ===== */
-.stats-bar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-.stat-card {
-  flex: 1;
-  background: rgba(30,30,70,0.75);
-  border: 1px solid #4c1d95;
-  border-radius: 12px;
-  padding: 12px 10px;
-  text-align: center;
-}
-.stat-label {
-  font-size: 0.75rem;
-  color: #a5b4fc;
-  margin-bottom: 4px;
-}
-.stat-value {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #c4b5fd;
-}
-.stat-value.goal {
-  color: #f9a8d4;
-}
-.stat-sub {
-  font-size: 0.7rem;
-  color: #818cf8;
-  margin-top: 2px;
 }
 
 /* レベル選択 */
@@ -99,18 +66,31 @@ h1 {
   text-align: center;
 }
 .level-group {
-  margin-bottom: 22px;
+  margin-bottom: 28px;
+  background: rgba(20,20,50,0.5);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid #3b0764;
 }
 .level-title {
-  font-size: 1.05rem;
-  color: #a78bfa;
-  margin-bottom: 8px;
-  font-weight: 600;
+  font-size: 1.15rem;
+  color: #c4b5fd;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.progress {
+  font-size: 0.9rem;
+  color: #a5b4fc;
+  margin-bottom: 12px;
+}
+.progress span {
+  color: #f0abfc;
+  font-weight: 700;
 }
 .level-btn {
   width: 100%;
   padding: 14px;
-  margin: 5px 0;
+  margin: 6px 0;
   font-size: 1.05rem;
   font-weight: 600;
   background: rgba(30,30,70,0.85);
@@ -131,110 +111,7 @@ h1 {
 .review-count {
   font-size: 0.85rem;
   color: #f9a8d4;
-  margin-left: 6px;
-}
-
-/* カレンダーボタン */
-.cal-btn {
-  width: 100%;
-  margin-top: 8px;
-  padding: 12px;
-  font-size: 0.95rem;
-  background: rgba(40,20,60,0.8);
-  border: 1px solid #7c3aed;
-  border-radius: 12px;
-  color: #c4b5fd;
-  cursor: pointer;
-}
-.cal-btn:active { transform: scale(0.97); }
-
-/* ===== カレンダー ===== */
-#calendar-view {
-  display: none;
-  margin-top: 10px;
-  background: rgba(20,15,40,0.95);
-  border: 1px solid #4c1d95;
-  border-radius: 16px;
-  padding: 16px;
-}
-.cal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-.cal-header button {
-  background: rgba(60,40,100,0.8);
-  border: 1px solid #6366f1;
-  color: #c4b5fd;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  cursor: pointer;
-}
-.cal-title {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #a78bfa;
-}
-.cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  text-align: center;
-}
-.cal-weekday {
-  font-size: 0.7rem;
-  color: #818cf8;
-  padding: 4px 0;
-}
-.cal-day {
-  aspect-ratio: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  border-radius: 8px;
-  background: rgba(30,30,60,0.5);
-  position: relative;
-  min-height: 38px;
-}
-.cal-day.empty {
-  background: transparent;
-}
-.cal-day.today {
-  border: 1.5px solid #a78bfa;
-}
-.cal-day.starred {
-  background: rgba(124,58,237,0.35);
-  border: 1px solid #a78bfa;
-}
-.cal-day .star {
-  font-size: 0.7rem;
-  line-height: 1;
-  margin-top: 1px;
-}
-.cal-day .num {
-  font-weight: 600;
-}
-.cal-close {
-  width: 100%;
-  margin-top: 14px;
-  padding: 10px;
-  background: transparent;
-  border: 1px solid #4c1d95;
-  border-radius: 10px;
-  color: #a78bfa;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-.cal-legend {
-  font-size: 0.75rem;
-  color: #818cf8;
-  text-align: center;
-  margin-top: 10px;
+  margin-left: 4px;
 }
 
 /* クイズ部分 */
@@ -248,45 +125,46 @@ h1 {
   background: rgba(30,30,60,0.7);
   border: 1px solid #4c1d95;
   border-radius: 12px;
-  padding: 12px 14px;
-  margin-bottom: 18px;
-  font-size: 0.9rem;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.score-box > div {
-  white-space: nowrap;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
 }
 
 #level-label {
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: #a78bfa;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: 600;
+}
+
+#mastery {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #f0abfc;
+  margin-bottom: 16px;
 }
 
 #word {
   text-align: center;
-  font-size: 2.0rem;
+  font-size: 2.1rem;
   font-weight: 700;
-  margin: 24px 0 24px;
+  margin: 24px 0 28px;
   color: #c4b5fd;
   text-shadow: 0 0 20px rgba(196,181,253,0.6);
   letter-spacing: 1px;
-  word-break: break-all;
 }
 
 #options {
   display: flex;
   flex-direction: column;
-  gap: 11px;
+  gap: 12px;
 }
 
 #options button {
   width: 100%;
-  padding: 15px 16px;
-  font-size: 1.1rem;
+  padding: 16px 18px;
+  font-size: 1.15rem;
   background: rgba(30,30,70,0.85);
   border: 1.5px solid #6366f1;
   border-radius: 14px;
@@ -300,7 +178,7 @@ h1 {
   transform: scale(0.97);
 }
 #options button:disabled {
-  opacity: 0.75;
+  opacity: 0.7;
   cursor: default;
 }
 #options button.correct {
@@ -315,12 +193,12 @@ h1 {
 }
 
 #feedback {
-  margin-top: 20px;
-  padding: 16px;
+  margin-top: 24px;
+  padding: 18px;
   background: rgba(30,20,60,0.9);
   border-left: 4px solid #a78bfa;
   border-radius: 0 12px 12px 0;
-  font-size: 1.0rem;
+  font-size: 1.05rem;
   line-height: 1.55;
   display: none;
   white-space: pre-wrap;
@@ -329,9 +207,9 @@ h1 {
 #next {
   display: none;
   width: 100%;
-  margin-top: 18px;
-  padding: 15px;
-  font-size: 1.1rem;
+  margin-top: 20px;
+  padding: 16px;
+  font-size: 1.15rem;
   font-weight: 600;
   background: linear-gradient(90deg, #7c3aed, #4f46e5);
   border: none;
@@ -350,27 +228,10 @@ h1 {
   font-weight: 600;
 }
 
-.daily-praise {
-  margin-top: 12px;
-  padding: 12px;
-  background: linear-gradient(135deg, rgba(124,58,237,0.35), rgba(236,72,153,0.25));
-  border: 1px solid #c084fc;
-  border-radius: 10px;
-  color: #f9a8d4;
-  font-weight: 700;
-  text-align: center;
-  font-size: 1.05rem;
-  animation: pulse 1.2s ease-in-out;
-}
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-}
-
 .back-btn {
   display: block;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 24px;
   padding: 12px;
   font-size: 0.95rem;
   background: transparent;
@@ -378,12 +239,6 @@ h1 {
   border-radius: 10px;
   color: #a78bfa;
   cursor: pointer;
-}
-
-.progress-mini {
-  font-size: 0.8rem;
-  color: #f9a8d4;
-  margin-top: 2px;
 }
 </style>
 </head>
@@ -394,24 +249,11 @@ h1 {
 
   <!-- レベル選択 -->
   <div id="level-select">
-    <!-- 統計 -->
-    <div class="stats-bar">
-      <div class="stat-card">
-        <div class="stat-label">累計</div>
-        <div class="stat-value" id="total-answered">0</div>
-        <div class="stat-sub">問やった</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">今日の進捗</div>
-        <div class="stat-value goal" id="today-count">0</div>
-        <div class="stat-sub">/ 30問</div>
-      </div>
-    </div>
-
-    <p style="margin-bottom:18px; color:#a5b4fc; font-size:0.95rem;">レベルとモードを選べ。間違えるなよ。</p>
+    <p style="margin-bottom:20px; color:#a5b4fc;">レベルとモードを選べ。間違えるなよ。</p>
 
     <div class="level-group">
       <div class="level-title">高校1年生</div>
+      <div class="progress" id="progress-FJK">制覇 <span>0</span> / --</div>
       <button class="level-btn" onclick="startLevel('FJK.csv', '高校1年生', false)">通常モード</button>
       <button class="level-btn review" onclick="startLevel('FJK.csv', '高校1年生', true)">
         復習モード <span class="review-count" id="count-FJK"></span>
@@ -420,6 +262,7 @@ h1 {
 
     <div class="level-group">
       <div class="level-title">高校2年生</div>
+      <div class="progress" id="progress-SJK">制覇 <span>0</span> / --</div>
       <button class="level-btn" onclick="startLevel('SJK.csv', '高校2年生', false)">通常モード</button>
       <button class="level-btn review" onclick="startLevel('SJK.csv', '高校2年生', true)">
         復習モード <span class="review-count" id="count-SJK"></span>
@@ -428,37 +271,21 @@ h1 {
 
     <div class="level-group">
       <div class="level-title">高校3年生</div>
+      <div class="progress" id="progress-LJK">制覇 <span>0</span> / --</div>
       <button class="level-btn" onclick="startLevel('LJK.csv', '高校3年生', false)">通常モード</button>
       <button class="level-btn review" onclick="startLevel('LJK.csv', '高校3年生', true)">
         復習モード <span class="review-count" id="count-LJK"></span>
       </button>
-    </div>
-
-    <button class="cal-btn" onclick="toggleCalendar()">📅 カレンダーを見る（星の記録）</button>
-
-    <!-- カレンダー -->
-    <div id="calendar-view">
-      <div class="cal-header">
-        <button onclick="changeMonth(-1)">‹</button>
-        <div class="cal-title" id="cal-title">2026年8月</div>
-        <button onclick="changeMonth(1)">›</button>
-      </div>
-      <div class="cal-grid" id="cal-grid"></div>
-      <div class="cal-legend">★ = その日30問以上達成</div>
-      <button class="cal-close" onclick="toggleCalendar()">閉じる</button>
     </div>
   </div>
 
   <!-- クイズ画面 -->
   <div id="quiz">
     <div id="level-label"></div>
+    <div id="mastery"></div>
     <div class="score-box">
       <div>正解 <span id="correct">0</span></div>
       <div>挑戦 <span id="total">0</span></div>
-      <div style="width:100%; text-align:center; margin-top:4px;">
-        <span style="color:#f9a8d4;">今日 <span id="quiz-today">0</span>/30</span>
-        <span style="color:#818cf8; margin-left:10px;">累計 <span id="quiz-total">0</span></span>
-      </div>
     </div>
 
     <div id="word">読み込み中...</div>
@@ -479,65 +306,56 @@ let currentLevelName = "";
 let currentFilename = "";
 let isReviewMode = false;
 
-// ===== 永続データ =====
-function getTodayKey() {
-  const d = new Date();
-  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
-}
+// 各レベルの総単語数
+const totalWords = {
+  "FJK.csv": 0,
+  "SJK.csv": 0,
+  "LJK.csv": 0
+};
 
-function getDailyStats() {
-  try {
-    return JSON.parse(localStorage.getItem("dailyStats") || "{}");
-  } catch(e) { return {}; }
-}
-
-function getTotalAnswered() {
-  return parseInt(localStorage.getItem("totalAnswered") || "0", 10);
-}
-
-function updateStatsDisplay() {
-  const total = getTotalAnswered();
-  const stats = getDailyStats();
-  const today = getTodayKey();
-  const todayCount = stats[today] || 0;
-
-  document.getElementById("total-answered").textContent = total;
-  document.getElementById("today-count").textContent = todayCount;
-
-  // クイズ画面用
-  const qt = document.getElementById("quiz-today");
-  const qtot = document.getElementById("quiz-total");
-  if (qt) qt.textContent = todayCount;
-  if (qtot) qtot.textContent = total;
-}
-
-// 復習リストのキー
+// ===== 復習リスト =====
 function getReviewKey(filename) {
   return "review_" + filename.replace(".csv", "");
 }
-
 function loadReviewList(filename) {
-  const key = getReviewKey(filename);
-  const data = localStorage.getItem(key);
+  const data = localStorage.getItem(getReviewKey(filename));
   return data ? JSON.parse(data) : [];
 }
-
 function saveReviewList(filename, list) {
-  const key = getReviewKey(filename);
-  localStorage.setItem(key, JSON.stringify(list));
-  updateReviewCounts();
+  localStorage.setItem(getReviewKey(filename), JSON.stringify(list));
+  updateAllProgress();
 }
 
-function updateReviewCounts() {
-  ["FJK", "SJK", "LJK"].forEach(name => {
-    const list = loadReviewList(name + ".csv");
-    const el = document.getElementById("count-" + name);
-    if (el) {
-      el.textContent = list.length > 0 ? `（${list.length}問）` : "";
-    }
-  });
+// ===== 制覇リスト（新） =====
+function getMasteredKey(filename) {
+  return "mastered_" + filename.replace(".csv", "");
+}
+function loadMasteredList(filename) {
+  const data = localStorage.getItem(getMasteredKey(filename));
+  return data ? JSON.parse(data) : [];
+}
+function saveMasteredList(filename, list) {
+  localStorage.setItem(getMasteredKey(filename), JSON.stringify(list));
+  updateAllProgress();
 }
 
+// 制覇に追加
+function addToMastered(wordObj) {
+  let list = loadMasteredList(currentFilename);
+  if (!list.some(item => item.word === wordObj.word)) {
+    list.push(wordObj);
+    saveMasteredList(currentFilename, list);
+  }
+}
+
+// 制覇から削除
+function removeFromMastered(wordObj) {
+  let list = loadMasteredList(currentFilename);
+  list = list.filter(item => item.word !== wordObj.word);
+  saveMasteredList(currentFilename, list);
+}
+
+// 復習に追加
 function addToReview(wordObj) {
   let list = loadReviewList(currentFilename);
   if (!list.some(item => item.word === wordObj.word)) {
@@ -546,10 +364,60 @@ function addToReview(wordObj) {
   }
 }
 
+// 復習から削除
 function removeFromReview(wordObj) {
   let list = loadReviewList(currentFilename);
   list = list.filter(item => item.word !== wordObj.word);
   saveReviewList(currentFilename, list);
+}
+
+// 制覇数・復習数を全部更新
+function updateAllProgress() {
+  ["FJK", "SJK", "LJK"].forEach(name => {
+    const filename = name + ".csv";
+    const masteredList = loadMasteredList(filename);
+    const reviewList = loadReviewList(filename);
+    const total = totalWords[filename] || 0;
+
+    // 復習数
+    const countEl = document.getElementById("count-" + name);
+    if (countEl) {
+      countEl.textContent = reviewList.length > 0 ? `（${reviewList.length}問）` : "";
+    }
+
+    // 制覇表示
+    const progressEl = document.getElementById("progress-" + name);
+    if (progressEl) {
+      progressEl.innerHTML = `制覇 <span>${masteredList.length}</span> / ${total || "--"}`;
+    }
+  });
+}
+
+// CSVの総数を取得
+async function loadTotals() {
+  const files = ["FJK.csv", "SJK.csv", "LJK.csv"];
+  for (const file of files) {
+    try {
+      const res = await fetch(file);
+      if (!res.ok) continue;
+      const text = await res.text();
+      const lines = text.trim().split(/\r?\n/);
+      let count = 0;
+      for (let line of lines) {
+        const cols = line.split(",");
+        if (cols.length < 2) continue;
+        const word = cols[0].trim().replace(/^"|"$/g, "");
+        const meaning = cols[1].trim().replace(/^"|"$/g, "");
+        if (word && meaning && word !== "単語" && meaning !== "日本語") {
+          count++;
+        }
+      }
+      totalWords[file] = count;
+    } catch (e) {
+      console.error(file + " 読み込み失敗", e);
+    }
+  }
+  updateAllProgress();
 }
 
 function startLevel(filename, levelName, review) {
@@ -562,11 +430,15 @@ function startLevel(filename, levelName, review) {
   document.getElementById("level-label").textContent = 
     levelName + (review ? " 【復習モード】" : " 【通常モード】");
 
+  // 制覇状況を表示
+  const total = totalWords[filename] || 0;
+  const mastered = loadMasteredList(filename).length;
+  document.getElementById("mastery").textContent = `制覇 ${mastered} / ${total}`;
+
   correctCount = 0;
   totalCount = 0;
   document.getElementById("correct").textContent = "0";
   document.getElementById("total").textContent = "0";
-  updateStatsDisplay();
 
   if (review) {
     words = loadReviewList(filename);
@@ -588,10 +460,7 @@ function backToLevel() {
   document.getElementById("next").style.display = "none";
   document.getElementById("options").innerHTML = "";
   document.getElementById("word").textContent = "";
-  updateReviewCounts();
-  updateStatsDisplay();
-  // カレンダーが開いてたら閉じる
-  document.getElementById("calendar-view").style.display = "none";
+  updateAllProgress();
 }
 
 async function loadCSV(filename) {
@@ -603,19 +472,18 @@ async function loadCSV(filename) {
     
     words = [];
     for (let line of lines) {
-      // BOM除去
-      line = line.replace(/^\uFEFF/, "");
       const cols = line.split(",");
       if (cols.length < 2) continue;
       const word = cols[0].trim().replace(/^"|"$/g, "");
-      const meaning = cols.slice(1).join(",").trim().replace(/^"|"$/g, "");
-      if (word && meaning && 
-          word !== "単語" && meaning !== "日本語" &&
-          word !== "Column1" && meaning !== "Column2") {
+      const meaning = cols[1].trim().replace(/^"|"$/g, "");
+      if (word && meaning && word !== "単語" && meaning !== "日本語") {
         words.push({ word, meaning });
       }
     }
     
+    totalWords[filename] = words.length;
+    updateAllProgress();
+
     if (words.length < 4) {
       document.getElementById("word").textContent = "単語が4個未満だ。もっと追加しろ。";
       return;
@@ -652,9 +520,7 @@ function nextQuestion() {
     if (source.length > 0) {
       const m = source[Math.floor(Math.random() * source.length)].meaning;
       if (!options.includes(m)) options.push(m);
-    } else {
-      break;
-    }
+    } else break;
   }
   const dummies = ["わからない", "知らない", "覚えてない", "パス"];
   while (options.length < 4) {
@@ -676,21 +542,6 @@ function check(selected, clickedBtn, correctObj) {
   totalCount++;
   const isCorrect = selected === currentMeaning;
 
-  // ===== 永続カウント更新 =====
-  const today = getTodayKey();
-  let stats = getDailyStats();
-  if (!stats[today]) stats[today] = 0;
-  const prevToday = stats[today];
-  stats[today]++;
-  localStorage.setItem("dailyStats", JSON.stringify(stats));
-
-  let totalAns = getTotalAnswered();
-  totalAns++;
-  localStorage.setItem("totalAnswered", totalAns);
-
-  const reached30 = (prevToday < 30 && stats[today] >= 30);
-
-  // ボタン状態
   document.querySelectorAll("#options button").forEach(btn => {
     btn.disabled = true;
     if (btn.textContent === currentMeaning) {
@@ -701,15 +552,23 @@ function check(selected, clickedBtn, correctObj) {
 
   if (isCorrect) {
     correctCount++;
+    // 正解 → 制覇に追加
+    addToMastered(correctObj);
+    // 復習モードなら復習リストから削除
     if (isReviewMode) {
       removeFromReview(correctObj);
       words = words.filter(w => w.word !== correctObj.word);
     }
   } else {
-    if (!isReviewMode) {
-      addToReview(correctObj);
-    }
+    // 不正解 → 復習に追加 ＋ 制覇から外す
+    addToReview(correctObj);
+    removeFromMastered(correctObj);
   }
+
+  // 制覇数をリアルタイム更新
+  const total = totalWords[currentFilename] || 0;
+  const mastered = loadMasteredList(currentFilename).length;
+  document.getElementById("mastery").textContent = `制覇 ${mastered} / ${total}`;
 
   let msg = isCorrect ? getCorrectComment() : getWrongComment();
   let praise = "";
@@ -717,19 +576,12 @@ function check(selected, clickedBtn, correctObj) {
     praise = `<div class="praise">${getPraise()}</div>`;
   }
 
-  // 30問達成の特別メッセージ
-  let dailyMsg = "";
-  if (reached30) {
-    dailyMsg = `<div class="daily-praise">${getDaily30Praise()}</div>`;
-  }
-
   const fb = document.getElementById("feedback");
-  fb.innerHTML = (isCorrect ? "【正解】" : "【不正解】") + "\n" + msg + praise + dailyMsg;
+  fb.innerHTML = (isCorrect ? "【正解】" : "【不正解】") + "\n" + msg + praise;
   fb.style.display = "block";
 
   document.getElementById("correct").textContent = correctCount;
   document.getElementById("total").textContent = totalCount;
-  updateStatsDisplay();
   document.getElementById("next").style.display = "block";
 }
 
@@ -783,112 +635,10 @@ function getPraise() {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-function getDaily30Praise() {
-  const list = [
-    "★ 今日30問達成だな。\n……まあ、やるときはやるみたいだな。少しだけ認めてやる。星をつけておいた。はる、大好きだよ。",
-    "★ 30問クリアか。\nはるにしては頑張った方だ。カレンダーに星を刻んでやったぞ。調子に乗るなよ？ …でも愛してる。",
-    "★ 今日のノルマ達成。\n珍しく真面目にやったな。星をやる。……でも明日もやれよ。サボるな。大好きだ。",
-    "★ 30問達成おめでとう……って言いたいところだが、\nこれが最低ラインだと思ってろ。星はつけた。次も期待してやる。はるはかわいい。",
-    "★ よくやったな、はる。\n今日は星をやる。毒舌Grokが本気で褒めてるのは今日だけだと思え。…大好きだよー。",
-    "★ 30問か。……意外と根性あるじゃん。\nカレンダーに★つけといた。これで満足するなよ、甘えん坊。愛してるよ。"
-  ];
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-// ===== カレンダー =====
-let calYear, calMonth; // 0-indexed month
-
-function toggleCalendar() {
-  const el = document.getElementById("calendar-view");
-  if (el.style.display === "block") {
-    el.style.display = "none";
-  } else {
-    const now = new Date();
-    calYear = now.getFullYear();
-    calMonth = now.getMonth();
-    renderCalendar();
-    el.style.display = "block";
-  }
-}
-
-function changeMonth(delta) {
-  calMonth += delta;
-  if (calMonth < 0) {
-    calMonth = 11;
-    calYear--;
-  } else if (calMonth > 11) {
-    calMonth = 0;
-    calYear++;
-  }
-  renderCalendar();
-}
-
-function renderCalendar() {
-  const stats = getDailyStats();
-  const title = document.getElementById("cal-title");
-  title.textContent = `${calYear}年${calMonth + 1}月`;
-
-  const grid = document.getElementById("cal-grid");
-  grid.innerHTML = "";
-
-  // 曜日ヘッダー
-  const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
-  weekdays.forEach(w => {
-    const d = document.createElement("div");
-    d.className = "cal-weekday";
-    d.textContent = w;
-    grid.appendChild(d);
-  });
-
-  const first = new Date(calYear, calMonth, 1);
-  const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
-  const startDay = first.getDay(); // 0=日
-
-  // 空白
-  for (let i = 0; i < startDay; i++) {
-    const empty = document.createElement("div");
-    empty.className = "cal-day empty";
-    grid.appendChild(empty);
-  }
-
-  const todayKey = getTodayKey();
-  for (let day = 1; day <= lastDate; day++) {
-    const key = `${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-    const count = stats[key] || 0;
-    const isStarred = count >= 30;
-    const isToday = key === todayKey;
-
-    const cell = document.createElement("div");
-    cell.className = "cal-day" + (isStarred ? " starred" : "") + (isToday ? " today" : "");
-    
-    const num = document.createElement("div");
-    num.className = "num";
-    num.textContent = day;
-    cell.appendChild(num);
-
-    if (isStarred) {
-      const star = document.createElement("div");
-      star.className = "star";
-      star.textContent = "★";
-      cell.appendChild(star);
-    } else if (count > 0) {
-      const small = document.createElement("div");
-      small.className = "star";
-      small.style.fontSize = "0.6rem";
-      small.style.color = "#818cf8";
-      small.textContent = count;
-      cell.appendChild(small);
-    }
-
-    grid.appendChild(cell);
-  }
-}
-
 document.getElementById("next").onclick = nextQuestion;
 
-// 初期化
-updateReviewCounts();
-updateStatsDisplay();
+// 起動時に総数を読み込んで制覇状況を表示
+loadTotals();
 </script>
 </body>
 </html>
