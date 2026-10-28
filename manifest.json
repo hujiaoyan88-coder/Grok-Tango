@@ -1,12 +1,12 @@
 {
   "id": "./",
-  "name": "英単語帳",
+  "name": "Grokの単語帳",
   "short_name": "英単語帳",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0a001f",
-  "theme_color": "#14120e",
+  "background_color": "#05051a",
+  "theme_color": "#05051a",
   "icons": [
     {
       "src": "./Grok-Tango.png",
